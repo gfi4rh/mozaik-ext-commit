@@ -19,7 +19,7 @@ class Commits extends Component {
 		let { url, project } = this.props;
 		
 		return {
-			id:     `gitlab.lastCommits.project`,
+			id:     `gitlab.lastCommits.${project}`,
 			params: {
 				url : url,
 				project : project
@@ -28,9 +28,8 @@ class Commits extends Component {
 	}
 	
 	onApiData(commits) {
-		console.log(commits)
 		this.setState({
-			commits : null
+			commits : commits
 		});
 	}
 	
@@ -38,6 +37,20 @@ class Commits extends Component {
 	render() {
 		
 		const { title } = this.props;
+		const { commits } = this.state;
+
+		let commitsNode = [];
+
+		if(commits){
+			commitsNode = commits.map(commit => 
+				<tr>
+					<td className="gitlab__commits__id gitlab__commits__ellipsis">#{commit.id}</td>
+					<td className="gitlab__commits__author gitlab__commits__ellipsis">{commit.author}</td>
+					<td className="gitlab__commits__message gitlab__commits__ellipsis" title={commit.msg}>{commit.msg}</td>
+					<td className="gitlab__commits__date gitlab__commits__ellipsis">{moment(commit.date).format('L') + " | " + moment(commit.date).format('HH:mm:ss')}</td>
+				</tr>);
+		}
+
 		
 		return (
 			<div>
@@ -47,7 +60,15 @@ class Commits extends Component {
 					</span>
 				</div>
 				<div className="widget__body">
-					Commits
+					<table className="gitlab__commits__table"> 
+						{/* <tr>
+							<th>ID</th>
+							<th>Author</th>
+							<th>Commit message</th>
+							<th>Date</th>
+						</tr> */}
+						{commitsNode}
+					</table>
 				</div>
 			</div>
 			);
