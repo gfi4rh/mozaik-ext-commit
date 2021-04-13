@@ -18,7 +18,7 @@ const client = mozaik => {
 			})
 			.then(res => res.json())
 			.then(json => json.slice(0, 5))
-			.then(commits => commits.maps(x=>{
+			.then(commits => commits.map(x=>{
 				return {
 					id : x.short_id,
 					author : x.author_name.split('.').map(e=>e[0].toUpperCase()+e.slice(1)).join(' '),
