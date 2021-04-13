@@ -18,6 +18,14 @@ const client = mozaik => {
 			})
 			.then(res => res.json())
 			.then(json => json.slice(0, 5))
+			.then(commits => commits.maps(x=>{
+				return {
+					id : x.short_id,
+					author : x.author_name,
+					msg : x.message,
+					date : x.createdAt
+				}
+			}))
 		},
 		
 	}
