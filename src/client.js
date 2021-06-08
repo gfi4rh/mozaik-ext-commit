@@ -4,46 +4,35 @@ import chalk from 'chalk';
 const client = mozaik => {
 
 	const apiCalls = {
-		
-		build( params ){
 
-			mozaik.logger.info(chalk.yellow(`[jenkins] calling jenkins.build`));
+		lastCommits ( params ) {
 
-			return fetch(`${params.url}/job/${params.name}/lastBuild/api/json`, {
+			mozaik.logger.info(chalk.yellow(`[gitlab] calling gitlab.lastCommit`));
+
+			return fetch(`${params.url}/api/v4/projects/${params.project}/repository/commits`, {
 				method: 'GET',
-				headers: {
+				headers : {
+					'Authorization' : `Bearer ${process.env.GITLAB_ACCESS_TOKEN}`,
 					'Accept': 'application/json'
 				}
 			})
 			.then(res => res.json())
-			.then(json => { 
-					if(json.building){
-							mozaik.bus.changeInterval(`jenkins.build.${params.name}`, 5000);
-					} else {
-							const { apisPollInterval } = mozaik.config;
-							mozaik.bus.changeInterval(`jenkins.build.${params.name}`, apisPollInterval);
-					}
-					return json ;
-			});
+			.then(json => json.slice(0, 5))
+			.then(commits => commits.map(x=>{
+				return {
+					id : x.short_id,
+					author : x.author_name.split('.').map(e=>e[0].toUpperCase()+e.slice(1)).join(' '),
+					msg : x.message,
+					date : x.createdAt
+				}
+			}))
+			.catch(err => err)
 		},
-
-		test ( params ){
-
-			mozaik.logger.info(chalk.yellow(`[jenkins] calling jenkins.test`));
-
-			return fetch(`${params.url}/job/${params.name}/lastBuild/api/json`,{
-				method : 'GET',
-				headers : {'Accept': 'application/json'}
-			})
-			.then(res => res.json())
-			.then(json => fetch(`${params.url}/job/${params.name}/${json.id}/allure/widgets/summary.json`,{
-				method : 'GET',
-				headers : {'Accept': 'application/json'}
-			})).then(res => res.json())
-		}
+		
 	}
 
-		return apiCalls;
+	return apiCalls;
+
 };
 
 export default client;
