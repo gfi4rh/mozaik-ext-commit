@@ -11,7 +11,8 @@ class Commits extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			commits : null
+			commits : null,
+			error : null
 		}
 	}
 	
@@ -28,27 +29,41 @@ class Commits extends Component {
 	}
 	
 	onApiData(commits) {
-		this.setState({
-			commits : commits
-		});
+
+		if('errno' in commits){
+			this.setState({
+				error : "L'adresse du serveur GitLab est inaccessible"
+			})
+		} else {
+			this.setState({
+				commits : commits
+			})
+		}
 	}
 	
 	
 	render() {
 		
-		const { title } = this.props;
-		const { commits } = this.state;
+		const { title } = this.props
+		const { commits, error } = this.state
 
-		let commitsNode = [];
+		let commitsNode
 
 		if(commits){
-			commitsNode = commits.map(commit => 
-				<tr>
-					<td className="gitlab__commits__id gitlab__commits__ellipsis">#{commit.id}</td>
-					<td className="gitlab__commits__author gitlab__commits__ellipsis">{commit.author}</td>
-					<td className="gitlab__commits__message gitlab__commits__ellipsis" title={commit.msg}>{commit.msg}</td>
-					<td className="gitlab__commits__date gitlab__commits__ellipsis">{moment(commit.date).format('L') + " | " + moment(commit.date).format('HH:mm:ss')}</td>
-				</tr>);
+			commitsNode =
+				<table className="gitlab__commits__table">
+					{commits.map(commit => 
+					<tr>
+						<td className="gitlab__commits__id gitlab__commits__ellipsis">#{commit.id}</td>
+						<td className="gitlab__commits__author gitlab__commits__ellipsis">{commit.author}</td>
+						<td className="gitlab__commits__message gitlab__commits__ellipsis" title={commit.msg}>{commit.msg}</td>
+						<td className="gitlab__commits__date gitlab__commits__ellipsis">{moment(commit.date).format('L') + " | " + moment(commit.date).format('HH:mm:ss')}</td>
+					</tr>)}
+				</table>
+		} else {
+			if(error){
+				commitsNode = (<div className="gitlab__commits__error">{error}</div>)
+			}
 		}
 
 		
@@ -60,15 +75,7 @@ class Commits extends Component {
 					</span>
 				</div>
 				<div className="widget__body">
-					<table className="gitlab__commits__table"> 
-						{/* <tr>
-							<th>ID</th>
-							<th>Author</th>
-							<th>Commit message</th>
-							<th>Date</th>
-						</tr> */}
-						{commitsNode}
-					</table>
+					{commitsNode}
 				</div>
 			</div>
 			);

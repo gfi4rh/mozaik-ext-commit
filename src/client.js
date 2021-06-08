@@ -26,6 +26,7 @@ const client = mozaik => {
 					date : x.createdAt
 				}
 			}))
+			.catch(err => err)
 		},
 		
 	}
