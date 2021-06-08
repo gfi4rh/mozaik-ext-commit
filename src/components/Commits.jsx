@@ -35,7 +35,7 @@ class Commits extends Component {
 				error : "L'adresse du serveur GitLab est inaccessible"
 			})
 		} else {
-			if(Object.keys(commits).length){
+			if(!Object.keys(commits).length){
 				this.setState({
 					error : "Ce numero de projet n'existe pas"
 				})
