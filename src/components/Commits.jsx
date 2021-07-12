@@ -63,7 +63,7 @@ class Commits extends Component {
 						<td className="gitlab__commits__id gitlab__commits__ellipsis">#{commit.id}</td>
 						<td className="gitlab__commits__author gitlab__commits__ellipsis">{commit.author}</td>
 						<td className="gitlab__commits__message gitlab__commits__ellipsis" title={commit.msg}>{commit.msg}</td>
-						<td className="gitlab__commits__date gitlab__commits__ellipsis">{moment(commit.date).format('L') + " | " + moment(commit.date).format('HH:mm:ss')}</td>
+						<td className="gitlab__commits__date gitlab__commits__ellipsis">{moment(commit.dateCommit).format('L') + " | " + moment(commit.dateCommit).format('HH:mm:ss')}</td>
 					</tr>)}
 				</table>
 		} else {
