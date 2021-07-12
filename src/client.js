@@ -23,7 +23,7 @@ const client = mozaik => {
 					id : x.short_id,
 					author : x.author_name.split('.').map(e=>e[0].toUpperCase()+e.slice(1)).join(' '),
 					msg : x.message,
-					date : x.createdAt
+					date : x.created_at
 				}
 			}))
 			.catch(err => err)
